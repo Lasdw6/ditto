@@ -638,7 +638,7 @@ export function AppWorkspace() {
       <main className="min-h-screen bg-background text-foreground">
         <div className="flex min-h-screen items-center justify-center">
           <div className="flex flex-col items-center gap-5 text-center">
-            <LogoMark full />
+            <LogoMark />
             <div className="flex items-center gap-3 text-sm tracking-[0.08em] text-zinc-300">
               <LoaderCircle className="size-4 animate-spin" />
               <span>Experimenting in the Lab &lt;3</span>
@@ -1171,33 +1171,37 @@ export function AppWorkspace() {
   );
 
   const profileView = (
-    <section className="h-full min-h-0 overflow-hidden rounded-3xl border border-white/10 bg-[#111111]/80">
-      <div className="flex h-full flex-col lg:flex-row">
-        {/* Left Panel - Edit Form */}
-        <div className="soft-scrollbar flex-1 overflow-y-auto border-b border-white/10 p-6 lg:border-b-0 lg:border-r lg:border-white/10 lg:p-8">
-          <div className="mx-auto max-w-xl">
-            <div className="mb-6">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#ffea00]">
-                Your Profile
-              </p>
-              <h3 className="mt-2 text-2xl font-bold text-white">
-                Edit your profile
-              </h3>
-              <p className="mt-1 text-sm text-zinc-400">
-                Keep your info up to date for better matches
-              </p>
+    <section className="h-full overflow-hidden rounded-3xl border border-white/10 bg-[#111111]/80">
+      <div className="flex h-full flex-col">
+        {/* Header */}
+        <div className="flex-none border-b border-white/10 px-8 py-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#ffea00]">Your Profile</p>
+              <h3 className="text-2xl font-bold text-white">Edit your profile</h3>
             </div>
+            <Button type="submit" variant="default" size="lg">
+              <Check className="size-5 mr-2" />
+              Save Changes
+            </Button>
+          </div>
+        </div>
 
-            <form onSubmit={handleSaveProfile} className="space-y-5">
-              {/* Basic Info Section */}
-              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
-                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">Basic Info</p>
-                <div className="grid gap-4 sm:grid-cols-2">
+        {/* Full Page Content */}
+        <form onSubmit={handleSaveProfile} className="flex-1 p-8">
+          <div className="grid h-full gap-8 lg:grid-cols-[1fr_380px]">
+            {/* Left - Form Fields */}
+            <div className="flex flex-col justify-center space-y-6">
+              {/* Section: Basic Info */}
+              <div>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">Basic Info</p>
+                <div className="grid grid-cols-2 gap-4">
                   <Label>
                     <span className="text-sm text-zinc-400">Name</span>
                     <Input
                       value={profileDraft.name}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, name: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                   <Label>
@@ -1205,6 +1209,7 @@ export function AppWorkspace() {
                     <Input
                       value={profileDraft.age}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, age: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                   <Label>
@@ -1212,6 +1217,7 @@ export function AppWorkspace() {
                     <Input
                       value={profileDraft.location}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, location: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                   <Label>
@@ -1219,20 +1225,22 @@ export function AppWorkspace() {
                     <Input
                       value={profileDraft.occupation}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, occupation: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                 </div>
               </div>
 
-              {/* Identity Section */}
-              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
-                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">Identity</p>
-                <div className="grid gap-4 sm:grid-cols-3">
+              {/* Section: Identity */}
+              <div>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">Identity</p>
+                <div className="grid grid-cols-3 gap-4">
                   <Label>
                     <span className="text-sm text-zinc-400">Gender</span>
                     <Input
                       value={profileDraft.gender}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, gender: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                   <Label>
@@ -1240,6 +1248,7 @@ export function AppWorkspace() {
                     <Input
                       value={profileDraft.pronouns}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, pronouns: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                   <Label>
@@ -1247,130 +1256,105 @@ export function AppWorkspace() {
                     <Input
                       value={profileDraft.interestedIn}
                       onChange={(event) => setProfileDraft((current) => ({ ...current, interestedIn: event.target.value }))}
+                      className="h-14 text-lg"
                     />
                   </Label>
                 </div>
               </div>
 
-              {/* About Section */}
-              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
-                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">About You</p>
-                <div className="space-y-4">
-                  <Label>
-                    <span className="text-sm text-zinc-400">Your Vibe</span>
-                    <Input
-                      value={profileDraft.vibe}
-                      onChange={(event) => setProfileDraft((current) => ({ ...current, vibe: event.target.value }))}
-                    />
-                  </Label>
-                  <Label>
-                    <span className="text-sm text-zinc-400">Bio</span>
-                    <Textarea
-                      rows={4}
-                      value={profileDraft.bio}
-                      onChange={(event) => setProfileDraft((current) => ({ ...current, bio: event.target.value }))}
-                    />
-                  </Label>
-                  <Label>
-                    <span className="text-sm text-zinc-400">Interests (comma separated)</span>
-                    <Input
-                      value={profileDraft.interests}
-                      onChange={(event) => setProfileDraft((current) => ({ ...current, interests: event.target.value }))}
-                    />
-                  </Label>
-                </div>
+              {/* Section: About */}
+              <div className="grid grid-cols-2 gap-4">
+                <Label>
+                  <span className="text-sm text-zinc-400">Your Vibe</span>
+                  <Input
+                    value={profileDraft.vibe}
+                    onChange={(event) => setProfileDraft((current) => ({ ...current, vibe: event.target.value }))}
+                    className="h-14 text-lg"
+                  />
+                </Label>
+                <Label>
+                  <span className="text-sm text-zinc-400">Interests (comma separated)</span>
+                  <Input
+                    value={profileDraft.interests}
+                    onChange={(event) => setProfileDraft((current) => ({ ...current, interests: event.target.value }))}
+                    className="h-14 text-lg"
+                  />
+                </Label>
               </div>
 
-              <Button type="submit" variant="default" size="lg" className="w-full">
-                <Check className="size-4 mr-2" />
-                Save Changes
-              </Button>
-            </form>
-          </div>
-        </div>
+              {/* Bio - Full Width */}
+              <Label>
+                <span className="text-sm text-zinc-400">Bio</span>
+                <Textarea
+                  rows={3}
+                  value={profileDraft.bio}
+                  onChange={(event) => setProfileDraft((current) => ({ ...current, bio: event.target.value }))}
+                  className="resize-none text-base"
+                />
+              </Label>
+            </div>
 
-        {/* Right Panel - Preview */}
-        <div className="soft-scrollbar w-full overflow-y-auto bg-[#0a0a0a]/50 p-6 lg:w-[400px] lg:p-8">
-          <div className="mx-auto max-w-sm">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#00ff94]">
-              Live Preview
-            </p>
-
-            {/* Profile Card */}
-            <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-[#1c1c1c]">
-              {/* Cover Image Area */}
-              <div className="h-24 bg-gradient-to-r from-[#ffea00]/20 via-[#00ff94]/10 to-[#1b3a2e]" />
-
-              {/* Avatar & Info */}
-              <div className="relative px-5 pb-5">
-                <div className="-mt-10 mb-3">
-                  <div className="relative inline-block">
+            {/* Right - Large Preview */}
+            <div className="flex flex-col justify-center">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#00ff94] mb-4">Profile Preview</p>
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#1c1c1c] shadow-2xl">
+                {/* Cover */}
+                <div className="h-32 bg-gradient-to-r from-[#ffea00]/30 via-[#00ff94]/20 to-[#1b3a2e]" />
+                {/* Content */}
+                <div className="relative px-6 pb-6">
+                  <div className="-mt-16 mb-4">
                     <Image
                       src={guestProfile.avatar}
                       alt={guestProfile.name}
-                      width={80}
-                      height={80}
-                      className="size-20 rounded-full object-cover ring-4 ring-[#1c1c1c]"
+                      width={120}
+                      height={120}
+                      className="size-28 rounded-full object-cover ring-4 ring-[#1c1c1c]"
                     />
-                    <div className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-[#00ff94] ring-2 ring-[#1c1c1c]">
-                      <Check className="size-3 text-[#111111]" />
+                  </div>
+                  <h4 className="text-2xl font-bold text-white">{guestProfile.name}</h4>
+                  <p className="text-sm text-zinc-400">{guestProfile.age} years old · {guestProfile.location}</p>
+                  <p className="mt-1 text-sm font-medium text-[#ffea00]">{guestProfile.occupation}</p>
+
+                  {guestProfile.vibe && (
+                    <div className="mt-4">
+                      <span className="inline-flex items-center rounded-full bg-[#ffea00]/10 px-4 py-1.5 text-sm font-medium text-[#ffea00] ring-1 ring-[#ffea00]/20">
+                        {guestProfile.vibe}
+                      </span>
+                    </div>
+                  )}
+
+                  {guestProfile.bio && (
+                    <p className="mt-4 text-sm text-zinc-300 leading-relaxed">{guestProfile.bio}</p>
+                  )}
+
+                  {/* Stats Grid */}
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-white/10 bg-[#111111]/50 p-3">
+                      <p className="text-xs uppercase tracking-wider text-zinc-500">Gender</p>
+                      <p className="mt-1 text-sm text-white">{guestProfile.gender}</p>
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-[#111111]/50 p-3">
+                      <p className="text-xs uppercase tracking-wider text-zinc-500">Pronouns</p>
+                      <p className="mt-1 text-sm text-white">{guestProfile.pronouns}</p>
                     </div>
                   </div>
-                </div>
 
-                <h4 className="text-xl font-bold text-white">{guestProfile.name}</h4>
-                <p className="text-sm text-zinc-400">{guestProfile.age} · {guestProfile.location}</p>
-                <p className="mt-1 text-sm font-medium text-[#ffea00]">{guestProfile.occupation}</p>
-
-                {/* Vibe Tag */}
-                {guestProfile.vibe && (
-                  <div className="mt-3">
-                    <span className="inline-flex items-center rounded-full bg-[#ffea00]/10 px-3 py-1 text-xs font-medium text-[#ffea00] ring-1 ring-[#ffea00]/20">
-                      {guestProfile.vibe}
-                    </span>
+                  {/* Interests */}
+                  <div className="mt-4">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500 mb-2">Interests</p>
+                    <div className="flex flex-wrap gap-2">
+                      {guestProfile.interests.map((interest) => (
+                        <span key={interest} className="rounded-full bg-white/5 px-3 py-1 text-sm text-zinc-300 ring-1 ring-white/10">
+                          {interest}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                )}
-
-                {/* Bio */}
-                {guestProfile.bio && (
-                  <p className="mt-4 text-sm text-zinc-300 leading-relaxed">
-                    {guestProfile.bio}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Details Cards */}
-            <div className="mt-4 space-y-3">
-              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
-                <p className="text-xs uppercase tracking-wider text-zinc-500">Gender & Pronouns</p>
-                <p className="mt-1 text-sm text-white">{guestProfile.gender} · {guestProfile.pronouns}</p>
-              </div>
-
-              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
-                <p className="text-xs uppercase tracking-wider text-zinc-500">Interested In</p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {guestProfile.interestedIn.map((item) => (
-                    <span key={item} className="rounded-full bg-[#00ff94]/10 px-2.5 py-1 text-xs font-medium text-[#00ff94] ring-1 ring-[#00ff94]/20">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
-                <p className="text-xs uppercase tracking-wider text-zinc-500">Interests</p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {guestProfile.interests.map((interest) => (
-                    <span key={interest} className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-zinc-300 ring-1 ring-white/10">
-                      {interest}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </section>
   );

@@ -106,12 +106,15 @@ ${payload.message}
     });
     const output = result.text.trim();
     const sources = (result.sources ?? [])
-      .map((source) => {
-        if (source.type === "url") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((source: any) => {
+        if (typeof source.url === "string" && source.url.length > 0) {
           return source.url;
         }
-
-        return source.name;
+        if (typeof source.name === "string" && source.name.length > 0) {
+          return source.name;
+        }
+        return "";
       })
       .filter(Boolean);
 
