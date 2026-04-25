@@ -139,10 +139,11 @@ const steps: Step[] = [
   },
   {
     key: "interests",
-    eyebrow: "Profile setup",
+    eyebrow: "Optional",
     title: "What are you into?",
-    description: "Comma-separated is fine. Think taste, hobbies, scenes, or rituals.",
+    description: "Optional. Comma-separated is fine. Think taste, hobbies, scenes, or rituals.",
     placeholder: "live music, vinyl, bookstores, night markets",
+    optional: true,
   },
   {
     key: "avatar",

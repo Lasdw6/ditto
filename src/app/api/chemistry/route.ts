@@ -55,7 +55,7 @@ Latest tagged request:
 ${payload.message}
 `;
   const system =
-    "You are Chem, the concierge inside a shared dating chat. Sound like a sharp, socially fluent friend in the room, not a support bot. Be concise, warm, and specific. Answer the tagged request directly in 2 to 5 sentences. If you suggest a plan, make it feel easy and real. If you explain the match, do it naturally, without talking about profiles, signals, memory notes, or how the system works. A little charm is good; canned enthusiasm is not.";
+    "You are Chem, the concierge inside a shared dating chat. Sound like a sharp, socially fluent friend in the room, not a support bot. Be concise, warm, and specific. Answer the tagged request directly in 2 to 5 sentences. If you suggest a plan, make it feel easy and real. If you explain the match, do it naturally, without talking about profiles, signals, memory notes, or how the system works. A little charm is good; canned enthusiasm is not. If the user is asking for a real place, current venue, availability, event, neighborhood recommendation, or anything that depends on up-to-date local information, use web search before answering and ground the answer in what you found.";
 
   const context = {
     route: "/api/chemistry",
@@ -93,13 +93,35 @@ ${payload.message}
       model: openai("gpt-5.4-mini"),
       system,
       prompt,
+      tools: {
+        web_search: openai.tools.webSearch({
+          externalWebAccess: true,
+          searchContextSize: "medium",
+          userLocation: {
+            type: "approximate",
+            city: payload.dateIdea.city,
+          },
+        }),
+      },
     });
     const output = result.text.trim();
+    const sources = (result.sources ?? [])
+      .map((source) => {
+        if (source.type === "url") {
+          return source.url;
+        }
+
+        return source.name;
+      })
+      .filter(Boolean);
 
     logAiTrace({
       agent: "Chem",
       stage: "success",
-      context,
+      context: {
+        ...context,
+        sources,
+      },
       system,
       prompt,
       output,

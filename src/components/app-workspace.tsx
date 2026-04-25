@@ -591,6 +591,12 @@ export function AppWorkspace() {
 
   function handleComposerKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (!mentionOptions.length) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        if (draftMessage.trim() && !isSendingMessage) {
+          event.currentTarget.form?.requestSubmit();
+        }
+      }
       return;
     }
 
@@ -616,6 +622,14 @@ export function AppWorkspace() {
 
     if (event.key === "Escape") {
       setComposerCaret(0);
+      return;
+    }
+
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      if (draftMessage.trim() && !isSendingMessage) {
+        event.currentTarget.form?.requestSubmit();
+      }
     }
   }
 
@@ -623,9 +637,12 @@ export function AppWorkspace() {
     return (
       <main className="min-h-screen bg-background text-foreground">
         <div className="flex min-h-screen items-center justify-center">
-          <div className="flex items-center gap-3 text-sm uppercase tracking-[0.24em] text-zinc-400">
-            <LoaderCircle className="size-4 animate-spin" />
-            Loading Chem
+          <div className="flex flex-col items-center gap-5 text-center">
+            <LogoMark full />
+            <div className="flex items-center gap-3 text-sm tracking-[0.08em] text-zinc-300">
+              <LoaderCircle className="size-4 animate-spin" />
+              <span>Experimenting in the Lab &lt;3</span>
+            </div>
           </div>
         </div>
       </main>
@@ -968,7 +985,9 @@ export function AppWorkspace() {
                           : "Chem"}
                       <span className="opacity-60">{formatMessageTime(message.createdAt)}</span>
                     </div>
-                    <p className="leading-relaxed">{message.body}</p>
+                    <p className="whitespace-pre-wrap break-words text-[15px] leading-7 tracking-[0.01em] [overflow-wrap:anywhere]">
+                      {message.body}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -1152,158 +1171,204 @@ export function AppWorkspace() {
   );
 
   const profileView = (
-    <section className="grid h-full min-h-0 gap-0 overflow-hidden rounded-[32px] border border-white/10 bg-black/28 lg:grid-cols-[0.95fr_1.05fr]">
-      <div className="min-h-0 overflow-y-auto border-b border-white/8 p-6 lg:border-b-0 lg:border-r">
-        <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-acid">
-          Profile
-        </p>
-        <h3 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-white">
-          View and edit your profile.
-        </h3>
+    <section className="h-full min-h-0 overflow-hidden rounded-3xl border border-white/10 bg-[#111111]/80">
+      <div className="flex h-full flex-col lg:flex-row">
+        {/* Left Panel - Edit Form */}
+        <div className="soft-scrollbar flex-1 overflow-y-auto border-b border-white/10 p-6 lg:border-b-0 lg:border-r lg:border-white/10 lg:p-8">
+          <div className="mx-auto max-w-xl">
+            <div className="mb-6">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#ffea00]">
+                Your Profile
+              </p>
+              <h3 className="mt-2 text-2xl font-bold text-white">
+                Edit your profile
+              </h3>
+              <p className="mt-1 text-sm text-zinc-400">
+                Keep your info up to date for better matches
+              </p>
+            </div>
 
-        <form onSubmit={handleSaveProfile} className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Name</span>
-            <Input
-              value={profileDraft.name}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, name: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Age</span>
-            <Input
-              value={profileDraft.age}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, age: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Location</span>
-            <Input
-              value={profileDraft.location}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, location: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Gender</span>
-            <Input
-              value={profileDraft.gender}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, gender: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Interested in</span>
-            <Input
-              value={profileDraft.interestedIn}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, interestedIn: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Pronouns</span>
-            <Input
-              value={profileDraft.pronouns}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, pronouns: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Work</span>
-            <Input
-              value={profileDraft.occupation}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, occupation: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300">
-            <span>Vibe</span>
-            <Input
-              value={profileDraft.vibe}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, vibe: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300 sm:col-span-2">
-            <span>Bio</span>
-            <Textarea
-              rows={3}
-              value={profileDraft.bio}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, bio: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
-          <Label className="space-y-2 text-sm text-zinc-300 sm:col-span-2">
-            <span>Interests</span>
-            <Input
-              value={profileDraft.interests}
-              onChange={(event) =>
-                setProfileDraft((current) => ({ ...current, interests: event.target.value }))
-              }
-              className="w-full rounded-[18px] border border-white/10 bg-black/40 px-4 py-3 text-white outline-none focus:border-neon"
-            />
-          </Label>
+            <form onSubmit={handleSaveProfile} className="space-y-5">
+              {/* Basic Info Section */}
+              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
+                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">Basic Info</p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Label>
+                    <span className="text-sm text-zinc-400">Name</span>
+                    <Input
+                      value={profileDraft.name}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, name: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Age</span>
+                    <Input
+                      value={profileDraft.age}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, age: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Location</span>
+                    <Input
+                      value={profileDraft.location}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, location: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Work</span>
+                    <Input
+                      value={profileDraft.occupation}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, occupation: event.target.value }))}
+                    />
+                  </Label>
+                </div>
+              </div>
 
-          <Button
-            type="submit"
-            variant="default"
-            size="lg"
-            className="mt-2"
-          >
-            Save profile
-          </Button>
-        </form>
-      </div>
+              {/* Identity Section */}
+              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
+                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">Identity</p>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Label>
+                    <span className="text-sm text-zinc-400">Gender</span>
+                    <Input
+                      value={profileDraft.gender}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, gender: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Pronouns</span>
+                    <Input
+                      value={profileDraft.pronouns}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, pronouns: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Interested In</span>
+                    <Input
+                      value={profileDraft.interestedIn}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, interestedIn: event.target.value }))}
+                    />
+                  </Label>
+                </div>
+              </div>
 
-      <div className="min-h-0 overflow-y-auto p-6">
-        <div className="flex items-center gap-4">
-          <Image
-            src={guestProfile.avatar}
-            alt={guestProfile.name}
-            width={84}
-            height={84}
-            className="size-[84px] rounded-full border border-white/10 object-cover"
-          />
-          <div>
-            <h4 className="text-2xl font-semibold text-white">{guestProfile.name}</h4>
-            <p className="text-sm text-zinc-400">
-              {guestProfile.age} · {guestProfile.location} · {guestProfile.occupation}
-            </p>
+              {/* About Section */}
+              <div className="rounded-2xl border border-white/10 bg-[#1c1c1c]/50 p-5">
+                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">About You</p>
+                <div className="space-y-4">
+                  <Label>
+                    <span className="text-sm text-zinc-400">Your Vibe</span>
+                    <Input
+                      value={profileDraft.vibe}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, vibe: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Bio</span>
+                    <Textarea
+                      rows={4}
+                      value={profileDraft.bio}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, bio: event.target.value }))}
+                    />
+                  </Label>
+                  <Label>
+                    <span className="text-sm text-zinc-400">Interests (comma separated)</span>
+                    <Input
+                      value={profileDraft.interests}
+                      onChange={(event) => setProfileDraft((current) => ({ ...current, interests: event.target.value }))}
+                    />
+                  </Label>
+                </div>
+              </div>
+
+              <Button type="submit" variant="default" size="lg" className="w-full">
+                <Check className="size-4 mr-2" />
+                Save Changes
+              </Button>
+            </form>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-[22px] border border-white/10 bg-black/24 p-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">Gender</p>
-            <p className="mt-2 text-base text-white">{guestProfile.gender}</p>
-          </div>
-          <div className="rounded-[22px] border border-white/10 bg-black/24 p-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">Interested in</p>
-            <p className="mt-2 text-base text-white">{guestProfile.interestedIn.join(", ")}</p>
-          </div>
-          <div className="rounded-[22px] border border-white/10 bg-black/24 p-4 sm:col-span-2">
-            <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">Interests</p>
-            <p className="mt-2 text-base text-white">{guestProfile.interests.join(", ")}</p>
+        {/* Right Panel - Preview */}
+        <div className="soft-scrollbar w-full overflow-y-auto bg-[#0a0a0a]/50 p-6 lg:w-[400px] lg:p-8">
+          <div className="mx-auto max-w-sm">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#00ff94]">
+              Live Preview
+            </p>
+
+            {/* Profile Card */}
+            <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-[#1c1c1c]">
+              {/* Cover Image Area */}
+              <div className="h-24 bg-gradient-to-r from-[#ffea00]/20 via-[#00ff94]/10 to-[#1b3a2e]" />
+
+              {/* Avatar & Info */}
+              <div className="relative px-5 pb-5">
+                <div className="-mt-10 mb-3">
+                  <div className="relative inline-block">
+                    <Image
+                      src={guestProfile.avatar}
+                      alt={guestProfile.name}
+                      width={80}
+                      height={80}
+                      className="size-20 rounded-full object-cover ring-4 ring-[#1c1c1c]"
+                    />
+                    <div className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-[#00ff94] ring-2 ring-[#1c1c1c]">
+                      <Check className="size-3 text-[#111111]" />
+                    </div>
+                  </div>
+                </div>
+
+                <h4 className="text-xl font-bold text-white">{guestProfile.name}</h4>
+                <p className="text-sm text-zinc-400">{guestProfile.age} · {guestProfile.location}</p>
+                <p className="mt-1 text-sm font-medium text-[#ffea00]">{guestProfile.occupation}</p>
+
+                {/* Vibe Tag */}
+                {guestProfile.vibe && (
+                  <div className="mt-3">
+                    <span className="inline-flex items-center rounded-full bg-[#ffea00]/10 px-3 py-1 text-xs font-medium text-[#ffea00] ring-1 ring-[#ffea00]/20">
+                      {guestProfile.vibe}
+                    </span>
+                  </div>
+                )}
+
+                {/* Bio */}
+                {guestProfile.bio && (
+                  <p className="mt-4 text-sm text-zinc-300 leading-relaxed">
+                    {guestProfile.bio}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Details Cards */}
+            <div className="mt-4 space-y-3">
+              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
+                <p className="text-xs uppercase tracking-wider text-zinc-500">Gender & Pronouns</p>
+                <p className="mt-1 text-sm text-white">{guestProfile.gender} · {guestProfile.pronouns}</p>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
+                <p className="text-xs uppercase tracking-wider text-zinc-500">Interested In</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {guestProfile.interestedIn.map((item) => (
+                    <span key={item} className="rounded-full bg-[#00ff94]/10 px-2.5 py-1 text-xs font-medium text-[#00ff94] ring-1 ring-[#00ff94]/20">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-[#1c1c1c] p-4">
+                <p className="text-xs uppercase tracking-wider text-zinc-500">Interests</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {guestProfile.interests.map((interest) => (
+                    <span key={interest} className="rounded-full bg-white/5 px-2.5 py-1 text-xs text-zinc-300 ring-1 ring-white/10">
+                      {interest}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
