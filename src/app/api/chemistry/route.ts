@@ -34,6 +34,22 @@ const payloadSchema = z.object({
   memories: z.array(z.string()),
 });
 
+function extractSourceLabel(source: unknown) {
+  if (!source || typeof source !== "object") {
+    return "";
+  }
+
+  if ("url" in source && typeof source.url === "string") {
+    return source.url;
+  }
+
+  if ("name" in source && typeof source.name === "string") {
+    return source.name;
+  }
+
+  return "";
+}
+
 export async function POST(request: Request) {
   const payload = payloadSchema.parse(await request.json());
   const transcript = payload.transcript
@@ -106,16 +122,7 @@ ${payload.message}
     });
     const output = result.text.trim();
     const sources = (result.sources ?? [])
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((source: any) => {
-        if (typeof source.url === "string" && source.url.length > 0) {
-          return source.url;
-        }
-        if (typeof source.name === "string" && source.name.length > 0) {
-          return source.name;
-        }
-        return "";
-      })
+      .map(extractSourceLabel)
       .filter(Boolean);
 
     logAiTrace({
